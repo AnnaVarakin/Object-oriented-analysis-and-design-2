@@ -44,8 +44,8 @@
 
 ---
 ### Диаграмма классов
-<img width="15573" height="16384" alt="Диаграмма без названия drawio (2)" src="https://github.com/user-attachments/assets/8beeea8b-119f-454d-830d-6f07c12cd3c1" />
+<img width="411" height="491" alt="ррр drawio" src="https://github.com/user-attachments/assets/7854e2d4-c37f-4901-b19c-344ec6b2b5a0" />
 
-## Диаграмма классов 
-## Диаграмма классов
+
+
 
