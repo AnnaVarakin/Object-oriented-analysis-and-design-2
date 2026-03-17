@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ Генератор созвездий ✨</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            min-height: 100vh;
+            display: flex;
+                    justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 5px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: #f1c40f;
+            color: #2c3e50;
+            border-radius: 50px;
+            font-weight: bold;
+            margin: 0 10px;
+            font-size: 0.9em;
+        }
+
+        .tools {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        .tools select, .tools input[type="checkbox"] {
+            padding: 8px;
+            border-radius: 10px;
+            border: none;
+            background: #444;
+            color: white;
+            font-size: 1em;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .tools select option {
+            background: #333;
+            color: white;
+        }
+
+        .tools label {
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #f1c40f, #e67e22);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(241, 196, 15, 0.5);
+        }
+
+        .status-bar {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            color: white;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-label {
+            color: #f1c40f;
+            font-weight: bold;
+        }
+
+        .sky-container {
+            background: linear-gradient(135deg, #000428, #004e92);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.5);
+            min-height: 400px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .sky {
+            display: grid;
+            gap: 2px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .star {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 24px;
+        }
+
+        .star:hover {
+            transform: scale(1.2);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .info-box {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 5px solid #f1c40f;
+            color: white;
+        }
+
+        .info-box h3 {
+            color: #f1c40f;
+            margin-bottom: 10px;
+        }
+
+        .info-box ul {
+            margin-left: 20px;
+            margin-top: 10px;
+            list-style-type: none;
+        }
+
+        .info-box li {
+            margin: 5px 0;
+        }
+
+        @media (max-width: 768px) {
+            .star {
+                width: 20px;
+                height: 20px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ Генератор созвездий ✨</h1>
+        <div class="subtitle">
+            Конструктор звёздного неба
+            <!-- убрали "C++ сервер" -->
+        </div>
+
+        <div class="tools">
+            <label>Цвет:
+                <select id="starColor">
+                    <option value="white">Белый</option>
+                    <option value="yellow">Жёлтый</option>
+                </select>
+            </label>
+            <label>Размер:
+                <select id="starSize">
+                    <option value="1">Маленькая</option>
+                    <option value="2">Средняя</option>
+                    <option value="3">Большая</option>
+                </select>
+            </label>
+            <label>
+                <input type="checkbox" id="starOutline"> Контур (полая)
+            </label>
+            <label>
+                <input type="checkbox" id="starTwinkle"> Мерцание
+            </label>
+            <button onclick="clearAllStars()">Очистить всё</button>  <!-- убран смайлик -->
+            <button onclick="generateConstellation()">Случайное созвездие</button>  <!-- убран смайлик -->
+        </div>
+
+        <div class="status-bar">
+            <div class="status-item">
+                <span class="status-label">Звёзд:</span>
+                <span id="starCount">0</span>
+            </div>
+        </div>
+
+        <div class="sky-container">
+            <div class="sky" id="sky"></div>
+        </div>
+
+        <div class="info-box">
+            <h3>Как работать</h3>
+            <ul>
+                <li>Клик по пустой клетке – добавить звезду</li>
+                <li>Клик по звезде – удалить её</li>
+                <li>Выберите цвет, размер, контур и мерцание</li>
+                <li>Кнопка "Случайное созвездие" добавит группу звёзд</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Глобальные переменные
+        let currentStars = [];
+        let starElements = {};
+        let selectedColor = 'white';
+        let selectedSize = 1;
+        let selectedOutline = false;
+        let selectedTwinkle = false;
+
+        // Привязка элементов управления
+        document.getElementById('starColor').addEventListener('change', (e) => selectedColor = e.target.value);
+        document.getElementById('starSize').addEventListener('change', (e) => selectedSize = parseInt(e.target.value));
+        document.getElementById('starOutline').addEventListener('change', (e) => selectedOutline = e.target.checked);
+        document.getElementById('starTwinkle').addEventListener('change', (e) => selectedTwinkle = e.target.checked);
+
+        // Функция для определения базового символа звезды (без учёта мерцания)
+        function getBaseSymbol(star) {
+            return star.outline ? '☆' : '★';
+        }
+
+        // Мерцание: переключение символа и размера для звёзд с twinkle=true
+        function twinkleStep() {
+            for (const star of currentStars) {
+                if (star.twinkle) {
+                    // Переключаем символ
+                    star._currentSym = (star._currentSym === '★') ? '☆' : '★';
+
+                    // Переключаем размер циклически: 1->2, 2->3, 3->1
+                    let newSize = star._currentSize + 1;
+                    if (newSize > 3) newSize = 1;
+                    star._currentSize = newSize;
+
+                    // Обновляем DOM, если элемент существует
+                    const el = starElements[star.id];
+                    if (el) {
+                        el.textContent = star._currentSym;
+                        // Меняем размер (fontSize)
+                        if (star._currentSize === 1) el.style.fontSize = '18px';
+                        else if (star._currentSize === 2) el.style.fontSize = '24px';
+                        else el.style.fontSize = '30px';
+                    }
+                }
+            }
+        }
+
+        async function loadStars() {
+            try {
+                const response = await fetch('/api/stars');
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Ошибка загрузки:', error);
+                return null;
+            }
+        }
+
+        async function addStar(x, y) {
+            const params = new URLSearchParams();
+            params.append('x', x);
+            params.append('y', y);
+            params.append('size', selectedSize);
+            params.append('color', selectedColor);
+            params.append('outline', selectedOutline);
+            params.append('twinkle', selectedTwinkle);
+            try {
+                const response = await fetch('/api/star', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: params
+                });
+                const result = await response.json();
+                if (result.status === 'ok') {
+                    await renderSky();
+                } else {
+                    alert('Нельзя добавить звезду: клетка занята');
+                }
+            } catch (error) {
+                console.error('Ошибка добавления:', error);
+            }
+        }
+
+        async function deleteStar(x, y) {
+            try {
+                const response = await fetch(`/api/star?x=${x}&y=${y}`, { method: 'DELETE' });
+                const result = await response.json();
+                if (result.status === 'ok') {
+                    await renderSky();
+                }
+            } catch (error) {
+                console.error('Ошибка удаления:', error);
+            }
+        }
+
+        async function clearAllStars() {
+            try {
+                await fetch('/api/stars', { method: 'DELETE' });
+                await renderSky();
+            } catch (error) {
+                console.error('Ошибка очистки:', error);
+            }
+        }
+
+        async function generateConstellation() {
+            try {
+                await fetch('/api/constellation', { method: 'POST' });
+                await renderSky();
+            } catch (error) {
+                console.error('Ошибка генерации:', error);
+            }
+        }
+
+        async function renderSky() {
+            const data = await loadStars();
+            if (!data) return;
+
+            currentStars = data.stars.map(star => {
+                // Добавляем поля для мерцания: текущий символ и текущий размер
+                star._currentSym = getBaseSymbol(star);
+                star._currentSize = star.size;
+                return star;
+            });
+
+            const sky = document.getElementById('sky');
+            sky.style.gridTemplateColumns = `repeat(${data.width}, 1fr)`;
+            sky.innerHTML = '';
+
+            starElements = {};
+
+            const grid = [];
+            for (let y = 0; y < data.height; y++) {
+                grid[y] = [];
+                for (let x = 0; x < data.width; x++) {
+                    grid[y][x] = null;
+                }
+            }
+
+            currentStars.forEach(star => {
+                grid[star.y][star.x] = star;
+            });
+
+            for (let y = 0; y < data.height; y++) {
+                for (let x = 0; x < data.width; x++) {
+                    const star = grid[y][x];
+                    const cell = document.createElement('div');
+                    cell.className = 'star';
+                    cell.dataset.x = x;
+                    cell.dataset.y = y;
+
+                    if (star) {
+                        cell.dataset.id = star.id;
+                        starElements[star.id] = cell;
+
+                        cell.textContent = star._currentSym;
+
+                        if (star.color === 'yellow') cell.style.color = '#ffd700';
+                        else cell.style.color = '#fffdd0';
+
+                        if (star._currentSize === 1) cell.style.fontSize = '18px';
+                        else if (star._currentSize === 2) cell.style.fontSize = '24px';
+                        else cell.style.fontSize = '30px';
+
+                        cell.style.webkitTextStroke = 'none';
+                        cell.style.textStroke = 'none';
+                        cell.style.textShadow = 'none';
+                    } else {
+                        cell.textContent = '·';
+                        cell.style.color = '#1a2a3a';
+                    }
+
+                    cell.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const target = e.currentTarget;
+                        const clickX = parseInt(target.dataset.x);
+                        const clickY = parseInt(target.dataset.y);
+                        const existingStar = currentStars.find(s => s.x === clickX && s.y === clickY);
+                        if (existingStar) {
+                            deleteStar(clickX, clickY);
+                        } else {
+                            addStar(clickX, clickY);
+                        }
+                    });
+
+                    sky.appendChild(cell);
+                }
+            }
+
+            document.getElementById('starCount').textContent = data.count;
+        }
+
+        // Инициализация и запуск таймера мерцания (каждые 0.2 сек)
+        window.onload = async () => {
+            await renderSky();
+            setInterval(twinkleStep, 200);
+        };
+    </script>
+</body>
+</html>
